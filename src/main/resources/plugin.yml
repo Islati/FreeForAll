@@ -1,0 +1,30 @@
+name: Team-Deathmatch
+main: com.caved_in.freeforall.Game
+version: 1.0
+description: KABOOM
+author: Brandon_TGC
+depend: [Multiverse-Core,TagAPI,PopupMenuAPI,CrackShot,WorldManager,ForceRespawn,Tunnels-Common]
+commands:
+   setteamspawn:
+      usage: /<command> <team>
+      permission: op
+   forcemap:
+      usage: /<command> <map>
+      permission: op
+   forcewin:
+      usage: /<command>
+      permission: op
+   kit:
+      usage: /<command>
+   loadout:
+      usage: /<command>
+   afk:
+      usage: /<command>
+   game:
+      usage: /<command>
+   spawns:
+      usage: /<command>
+   maps:
+      usage: /<command>
+   gem:
+      usage: /<command>
