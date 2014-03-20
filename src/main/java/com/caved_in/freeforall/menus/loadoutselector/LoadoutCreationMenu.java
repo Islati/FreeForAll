@@ -1,6 +1,6 @@
 package com.caved_in.freeforall.menus.loadoutselector;
 
-import com.caved_in.commons.items.ItemHandler;
+import com.caved_in.commons.item.Items;
 import com.caved_in.freeforall.Game;
 import com.caved_in.freeforall.fakeboard.FakeboardHandler;
 import com.caved_in.freeforall.fakeboard.GamePlayer;
@@ -37,8 +37,8 @@ public class LoadoutCreationMenu {
 		for (int I = 0; I < loadoutLimit; I++) {
 			int loadoutNumber = I + 1;
 			LoadoutCreationItem loadoutCreationItem = new LoadoutCreationItem("Loadout #" + loadoutNumber, new MaterialData(Material.CHEST), loadoutNumber);
-			loadoutCreationItem.setDescriptions(Arrays.asList(ItemHandler.getItemName(Game.crackShotAPI.generateWeapon(GamePlayer.getPrimaryGunID
-					(loadoutNumber))), ItemHandler.getItemName(Game.crackShotAPI.generateWeapon(GamePlayer.getSecondaryGunID(loadoutNumber)))));
+			loadoutCreationItem.setDescriptions(Arrays.asList(Items.getName(Game.crackShotAPI.generateWeapon(GamePlayer.getPrimaryGunID
+					(loadoutNumber))), Items.getName(Game.crackShotAPI.generateWeapon(GamePlayer.getSecondaryGunID(loadoutNumber)))));
 			loadoutCreationMenu.addMenuItem(loadoutCreationItem, I);
 		}
 

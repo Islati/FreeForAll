@@ -1,7 +1,7 @@
 package com.caved_in.freeforall.vote;
 
 import com.caved_in.commons.Messages;
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.Game;
 import com.caved_in.freeforall.GameMessages;
 import org.bukkit.entity.Player;
@@ -24,13 +24,13 @@ public enum ChatCommand {
 		public void doCommand(Player player, String... args) {
 			if (!VoteFactory.hasActiveVote()) {
 				String playerKick = args[0];
-				if (PlayerHandler.isOnline(playerKick)) {
+				if (Players.isOnline(playerKick)) {
 					VoteFactory.setActiveVote(VoteFactory.createVote(VOTE_KICK_PLAYER, player.getName(), args));
 				} else {
-					PlayerHandler.sendMessage(player, Messages.PLAYER_OFFLINE(playerKick));
+					Players.sendMessage(player, Messages.PLAYER_OFFLINE(playerKick));
 				}
 			} else {
-				PlayerHandler.sendMessage(player, GameMessages.VOTE_ALREADY_IN_PROGRESS);
+				Players.sendMessage(player, GameMessages.VOTE_ALREADY_IN_PROGRESS);
 			}
 		}
 	},
@@ -43,11 +43,11 @@ public enum ChatCommand {
 					if (Game.isValidMap(mapName)) {
 						VoteFactory.setActiveVote(VoteFactory.createVote(VOTE_MAP_CHANGE, player.getName(), args));
 					} else {
-						PlayerHandler.sendMessage(player, GameMessages.INVALID_MAP_NAME(mapName));
+						Players.sendMessage(player, GameMessages.INVALID_MAP_NAME(mapName));
 					}
 				}
 			} else {
-				PlayerHandler.sendMessage(player, GameMessages.VOTE_ALREADY_IN_PROGRESS);
+				Players.sendMessage(player, GameMessages.VOTE_ALREADY_IN_PROGRESS);
 			}
 		}
 	},
@@ -59,12 +59,12 @@ public enum ChatCommand {
 				String playerName = player.getName();
 				if (!vote.hasVoted(playerName)) {
 					vote.addYes();
-					PlayerHandler.sendMessage(player, "&aThanks for voting!");
+					Players.sendMessage(player, "&aThanks for voting!");
 				} else {
-					PlayerHandler.sendMessage(player, GameMessages.VOTE_ALREADY_CASTED);
+					Players.sendMessage(player, GameMessages.VOTE_ALREADY_CASTED);
 				}
 			} else {
-				PlayerHandler.sendMessage(player, GameMessages.NO_ACTIVE_VOTE);
+				Players.sendMessage(player, GameMessages.NO_ACTIVE_VOTE);
 			}
 		}
 	},
@@ -76,12 +76,12 @@ public enum ChatCommand {
 				String playerName = player.getName();
 				if (!vote.hasVoted(playerName)) {
 					vote.addNo();
-					PlayerHandler.sendMessage(player, "&aThanks for voting!");
+					Players.sendMessage(player, "&aThanks for voting!");
 				} else {
-					PlayerHandler.sendMessage(player, GameMessages.VOTE_ALREADY_CASTED);
+					Players.sendMessage(player, GameMessages.VOTE_ALREADY_CASTED);
 				}
 			} else {
-				PlayerHandler.sendMessage(player, GameMessages.NO_ACTIVE_VOTE);
+				Players.sendMessage(player, GameMessages.NO_ACTIVE_VOTE);
 			}
 		}
 	};

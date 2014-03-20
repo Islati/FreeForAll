@@ -1,10 +1,9 @@
 package com.caved_in.freeforall.fakeboard;
 
-import com.caved_in.commons.player.PlayerHandler;
-import com.caved_in.commons.potions.PotionHandler;
+import com.caved_in.commons.player.Players;
+import com.caved_in.commons.potion.Potions;
 import com.caved_in.freeforall.Game;
 import com.caved_in.freeforall.GameMessages;
-import com.caved_in.freeforall.TeamType;
 import com.caved_in.freeforall.guns.GunWrapper;
 import com.caved_in.freeforall.loadout.Loadout;
 import com.caved_in.freeforall.perks.Perk;
@@ -32,7 +31,6 @@ public class GamePlayer {
 	private int loadoutSlots = NON_PREMIUM_LOADOUT_LIMIT;
 
 	private String name = "";
-	private TeamType team;
 
 	private int playerScore = 0;
 	private int killStreak = 0;
@@ -125,7 +123,7 @@ public class GamePlayer {
 
 				@Override
 				public void run() {
-					PlayerHandler.kickPlayer(getPlayer(), GameMessages.PLAYER_DATA_LOAD_ERROR);
+					Players.kick(getPlayer(), GameMessages.PLAYER_DATA_LOAD_ERROR);
 				}
 			});
 		}
@@ -171,7 +169,7 @@ public class GamePlayer {
 	}
 
 	public Player getPlayer() {
-		return PlayerHandler.getPlayer(name);
+		return Players.getPlayer(name);
 	}
 
 	public int getPlayerScore() {
@@ -184,14 +182,6 @@ public class GamePlayer {
 
 	public void addScore(int amount) {
 		playerScore += amount;
-	}
-
-	public void setTeam(TeamType team) {
-		this.team = team;
-	}
-
-	public TeamType getTeam() {
-		return team;
 	}
 
 	public int getKillStreak() {
@@ -265,12 +255,12 @@ public class GamePlayer {
 		this.afk = isAfk;
 		Player player = getPlayer();
 		if (isAfk) {
-			PlayerHandler.addPotionEffect(player, PotionHandler.getPotionEffect(PotionEffectType.INVISIBILITY, 1, afkDuration));
+			Players.addPotionEffect(player, Potions.getPotionEffect(PotionEffectType.INVISIBILITY, 1, afkDuration));
 		} else {
 			player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		}
 		if (message) {
-			PlayerHandler.sendMessage(player, "&7You are " + (isAfk ? "now" : "no longer") + " afk");
+			Players.sendMessage(player, "&7You are " + (isAfk ? "now" : "no longer") + " afk");
 
 		}
 	}

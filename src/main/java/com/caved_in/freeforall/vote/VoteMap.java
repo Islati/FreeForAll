@@ -1,7 +1,7 @@
 package com.caved_in.freeforall.vote;
 
 import com.caved_in.commons.Commons;
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.Game;
 import com.caved_in.freeforall.GameMessages;
 
@@ -30,7 +30,7 @@ public class VoteMap extends Vote {
 			@Override
 			public void run() {
 				Game.gameMap = map;
-				PlayerHandler.sendMessageToAllPlayers(GameMessages.MAP_CHANGED(map));
+				Players.messageAll(GameMessages.MAP_CHANGED(map));
 			}
 		});
 	}
@@ -38,6 +38,6 @@ public class VoteMap extends Vote {
 	@Override
 	public void announce() {
 		String mapChangeAnnoucnement = GameMessages.ANNOUNCE_VOTE_MAP_CHANGE(getCaster(), map);
-		PlayerHandler.sendMessageToAllPlayers(mapChangeAnnoucnement);
+		Players.messageAll(mapChangeAnnoucnement);
 	}
 }

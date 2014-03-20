@@ -1,7 +1,7 @@
 package com.caved_in.freeforall.menus.loadoutselector.weaponselection.secondary;
 
-import com.caved_in.commons.items.ItemHandler;
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.item.Items;
+import com.caved_in.commons.player.Players;
 import com.caved_in.commons.player.PlayerWrapper;
 import com.caved_in.freeforall.fakeboard.FakeboardHandler;
 import com.caved_in.freeforall.fakeboard.GamePlayer;
@@ -31,10 +31,10 @@ public class SecondarySelectionItem extends MenuItem {
 
 
 	public SecondarySelectionItem(GunWrapper gunWrapper, ItemStack gunItemStack, int loadoutNumber, boolean purchased) {
-		super(ItemHandler.getItemName(gunItemStack), new MaterialData(gunItemStack.getType()));
+		super(Items.getName(gunItemStack), new MaterialData(gunItemStack.getType()));
 		this.gunData = gunWrapper;
 		this.gunID = gunWrapper.getGunName();
-		List<String> itemDescription = ItemHandler.getItemLore(gunItemStack);
+		List<String> itemDescription = Items.getLore(gunItemStack);
 		itemDescription.add("");
 		itemDescription.add(purchased ? ChatColor.GREEN + "You've unlocked this Item!" : ChatColor.AQUA + "Costs " + gunData.getGunPrice() + " XP to unlock");
 		this.setDescriptions(itemDescription);
@@ -53,12 +53,12 @@ public class SecondarySelectionItem extends MenuItem {
 				this.hasAlreadyClicked = true;
 				player.sendMessage(ChatColor.YELLOW + "Click again to purchase the " + this.getText());
 			} else {
-				PlayerWrapper playerWrapper = PlayerHandler.getData(player.getName());
+				PlayerWrapper playerWrapper = Players.getData(player.getName());
 				double playerBalance = playerWrapper.getCurrency();
 				if (playerBalance >= this.gunData.getGunPrice()) {
 					this.hasAlreadyClicked = false;
 					playerWrapper.removeCurrency(this.gunData.getGunPrice());
-					PlayerHandler.updateData(playerWrapper);
+					Players.updateData(playerWrapper);
 					GamePlayer.unlockGun(this.gunID);
 					player.sendMessage(ChatColor.AQUA + "You've unlocked the " + this.getText() + ChatColor.AQUA + "! You have " + ChatColor.GREEN + ((int)
 							playerWrapper.getCurrency()) + " XP " + ChatColor.AQUA + "remaining!");

@@ -1,8 +1,7 @@
 package com.caved_in.freeforall.scoreboard;
 
 import com.caved_in.commons.Commons;
-import com.caved_in.commons.player.PlayerHandler;
-import com.caved_in.freeforall.TeamType;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.fakeboard.FakeboardHandler;
 import com.caved_in.freeforall.fakeboard.GamePlayer;
 import org.bukkit.Bukkit;
@@ -26,8 +25,7 @@ public class PlayerScoreboard {
 	private Objective objective;
 	private Scoreboard scoreboard;
 
-	private static String terroristScore = ChatColor.GOLD + "Terrorist:";
-	private static String counterTerroristScore = ChatColor.GOLD + "CTerrorist:";
+	private static String leadingScore = ChatColor.GOLD + "Top Score:";
 	private static String killsScore = ChatColor.AQUA + "Kills:";
 	private static String deathsScore = ChatColor.RED + "Deaths:";
 	private static String killsStreak = ChatColor.YELLOW + "Kill Streak:";
@@ -38,13 +36,12 @@ public class PlayerScoreboard {
 		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 		objective = scoreboard.registerNewObjective(dummyObjectiveName, "dummy");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		objective.setDisplayName("Lock & Load");
+		objective.setDisplayName("Free For All");
 	}
 
 	public void clearScoreboard() {
 		try {
-			scoreboard.resetScores(getName(terroristScore));
-			scoreboard.resetScores(getName(counterTerroristScore));
+			scoreboard.resetScores(getName(leadingScore));
 			scoreboard.resetScores(getName(killsScore));
 			scoreboard.resetScores(getName(deathsScore));
 			scoreboard.resetScores(getName(killsStreak));
@@ -60,49 +57,26 @@ public class PlayerScoreboard {
 	}
 
 	public void updateScoreboardData(GamePlayer player) {
-		Score terroristScore = objective.getScore(getName(PlayerScoreboard.terroristScore));
-		Score counterTerroristScore = objective.getScore(getName(PlayerScoreboard.counterTerroristScore));
+		//The score for the highest scoring player
+		Score highestScore = objective.getScore(getName(leadingScore));
+		//The amount of kills the player has
 		Score playerKillScore = objective.getScore(getName(killsScore));
+		//Get the amount of times the player's died
 		Score playerDeathScore = objective.getScore(getName(deathsScore));
+		//Get the players current killstreak
 		Score playerKillStreak = objective.getScore(getName(killsStreak));
+		//Get the players current amount of XP for the scoreboard.
 		Score playerXPScore = objective.getScore(getName(XP));
-		terroristScore.setScore(FakeboardHandler.getTeam(TeamType.TERRORIST).getTeamScore());
-		counterTerroristScore.setScore(FakeboardHandler.getTeam(TeamType.COUNTER_TERRORIST).getTeamScore());
+		//Set the highest score
+		highestScore.setScore(FakeboardHandler.getHighestScore());
 		playerKillScore.setScore(player.getPlayerScore());
 		playerDeathScore.setScore(player.getPlayerDeaths());
 		playerKillStreak.setScore(player.getKillStreak());
-		playerXPScore.setScore((int) PlayerHandler.getData(player.getName()).getCurrency());
+		playerXPScore.setScore((int) Players.getData(player.getName()).getCurrency());
 	}
 
 	public enum ScoreType {
 		Terrorist, CounterTerrorist, Kills, Deaths, Killstreak
-	}
-
-	public void updateData(ScoreType score, GamePlayer playerWrapper) {
-		switch (score) {
-			case CounterTerrorist:
-				Score ctScore = this.objective.getScore(getName(counterTerroristScore));
-				ctScore.setScore(FakeboardHandler.getTeam(TeamType.COUNTER_TERRORIST).getTeamScore());
-				break;
-			case Deaths:
-				Score dScore = objective.getScore(getName(deathsScore));
-				dScore.setScore(playerWrapper.getPlayerDeaths());
-				break;
-			case Kills:
-				Score kScore = objective.getScore(getName(killsScore));
-				kScore.setScore(playerWrapper.getPlayerScore());
-				break;
-			case Killstreak:
-				Score ksScore = objective.getScore(getName(killsScore));
-				ksScore.setScore(playerWrapper.getKillStreak());
-				break;
-			case Terrorist:
-				Score tScore = objective.getScore(getName(terroristScore));
-				tScore.setScore(FakeboardHandler.getTeam(TeamType.TERRORIST).getTeamScore());
-				break;
-			default:
-				break;
-		}
 	}
 
 	public OfflinePlayer getName(String Name) {

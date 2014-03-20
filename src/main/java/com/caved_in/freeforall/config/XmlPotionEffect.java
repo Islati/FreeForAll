@@ -1,7 +1,7 @@
 package com.caved_in.freeforall.config;
 
-import com.caved_in.commons.potions.PotionHandler;
-import com.caved_in.commons.potions.PotionType;
+import com.caved_in.commons.potion.Potions;
+import com.caved_in.commons.potion.PotionType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.simpleframework.xml.Attribute;
@@ -29,7 +29,7 @@ public class XmlPotionEffect {
 		this.level = level;
 		if (PotionType.isPotionType(alias)) {
 			valid = true;
-			this.potionEffect = PotionHandler.getPotionEffect(PotionType.getPotionType(alias).getPotionEffectType(), level, Integer.MAX_VALUE);
+			this.potionEffect = Potions.getPotionEffect(PotionType.getPotionType(alias).getPotionEffectType(), level, Integer.MAX_VALUE);
 		} else {
 			this.potionEffect = new PotionEffect(PotionEffectType.CONFUSION, 1, 1);
 		}

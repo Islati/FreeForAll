@@ -1,6 +1,6 @@
 package com.caved_in.freeforall.menus.loadoutselector.weaponselection.selectiontypemenu;
 
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.Game.LoadoutSlot;
 import com.caved_in.freeforall.GameMessages;
 import com.caved_in.freeforall.menus.loadoutselector.weaponselection.primary.PrimaryWeaponTypeMenu;
@@ -33,15 +33,15 @@ public class SelectionItem extends MenuItem {
 		switch (this.loadoutSlot) {
 			case Primary:
 				getMenu().switchMenu(player, new PrimaryWeaponTypeMenu(loadoutNumber).getMenu());
-				PlayerHandler.sendMessage(player, GameMessages.SELECT_PRIMARY_WEAPON_TYPE);
+				Players.sendMessage(player, GameMessages.SELECT_PRIMARY_WEAPON_TYPE);
 				break;
 			case Secondary:
 				getMenu().switchMenu(player, new SecondaryWeaponTypeMenu(loadoutNumber).getMenu());
-				PlayerHandler.sendMessage(player, GameMessages.SELECT_SECONDARY_WEAPON_TYPE);
+				Players.sendMessage(player, GameMessages.SELECT_SECONDARY_WEAPON_TYPE);
 				break;
 			case Tertiary:
 				getMenu().switchMenu(player, new PerkSelectionMenu(loadoutNumber, player).getMenu());
-				PlayerHandler.sendMessage(player, GameMessages.SELECT_ACTIVE_PERK);
+				Players.sendMessage(player, GameMessages.SELECT_ACTIVE_PERK);
 				break;
 			default:
 				break;

@@ -1,8 +1,8 @@
 package com.caved_in.freeforall.menus.loadoutselector.weaponselection.tertiary;
 
 
-import com.caved_in.commons.player.PlayerHandler;
 import com.caved_in.commons.player.PlayerWrapper;
+import com.caved_in.commons.player.Players;
 import com.caved_in.commons.utilities.StringUtil;
 import com.caved_in.freeforall.fakeboard.FakeboardHandler;
 import com.caved_in.freeforall.fakeboard.GamePlayer;
@@ -47,36 +47,35 @@ public class PerkMenuItem extends MenuItem {
 	@Override
 	public void onClick(Player player) {
 		GamePlayer GamePlayer = FakeboardHandler.getPlayer(player);
-		if (GamePlayer.hasPerk(this.perk)) {
-			GamePlayer.getLoadout(this.loadout).setPerk(this.perk);
-			player.sendMessage(StringUtil.formatColorCodes("&aYour active perk for loadout # " + this.loadout + " is now '" + this.getText() + "'"));
+		if (GamePlayer.hasPerk(perk)) {
+			GamePlayer.getLoadout(loadout).setPerk(perk);
+			Players.sendMessage(player, "&aYour active perk for loadout # " + loadout + " is now '" + getText() + "'");
 			this.getMenu().closeMenu(player);
 		} else {
-			if (!this.hasClicked) {
-				if (this.perk.isTieredPerk()) {
+			if (!hasClicked) {
+				if (perk.isTieredPerk()) {
 					if (!GamePlayer.hasPerk(PerkHandler.getPerk(perk.getPerkRequired()))) {
-						player.sendMessage(StringUtil.formatColorCodes("&e" + perkName + " &cis a tiered perk, you need to purchase &e" + perk.getPerkRequired
-								() + "&c before you can purchase this one"));
+						player.sendMessage(StringUtil.formatColorCodes("&e" + perkName + " &cis a tiered perk, you need to purchase &e" + perk.getPerkRequired() + "&c before you can purchase this one"));
 					} else {
-						this.hasClicked = true;
-						player.sendMessage(StringUtil.formatColorCodes("&eClick again to purchase &6" + this.perk.getPerkName()));
+					hasClicked = true;
+						Players.sendMessage(player, "&eClick again to purchase &6" + perk.getPerkName());
 					}
 				} else {
-					this.hasClicked = true;
-					player.sendMessage(StringUtil.formatColorCodes("&eClick again to purchase &6" + this.perk.getPerkName()));
+					hasClicked = true;
+					player.sendMessage(StringUtil.formatColorCodes("&eClick again to purchase &6" + perk.getPerkName()));
 				}
 			} else {
-				PlayerWrapper playerWrapper = PlayerHandler.getData(player.getName());
+				PlayerWrapper playerWrapper = Players.getData(player.getName());
 
 				if (playerWrapper.getCurrency() >= perkPurchaseCost) {
 					playerWrapper.removeCurrency(perkPurchaseCost);
-					PlayerHandler.updateData(playerWrapper);
+					Players.updateData(playerWrapper);
 					GamePlayer.addPerk(perk);
-					player.sendMessage(StringUtil.formatColorCodes("&bYou've purchased the &e" + this.perk.getPerkName() + "&b for &a" + this.perk
-							.getPurchaseCost() + "; You have &a" + ((int) playerWrapper.getCurrency()) + " &b XP remaining."));
-					this.getMenu().closeMenu(player);
+					Players.sendMessage(player, "&bYou've purchased the &e" + perk.getPerkName() + "&b for &a" + this.perk
+							.getPurchaseCost() + "; You have &a" + ((int) playerWrapper.getCurrency()) + " &b XP remaining.");
+					getMenu().closeMenu(player);
 				} else {
-					player.sendMessage(StringUtil.formatColorCodes("&cYou don't have enough XP to unlock &e" + this.perk.getPerkName()));
+					Players.sendMessage(player, "&cYou don't have enough XP to unlock &e" + perk.getPerkName());
 				}
 			}
 		}

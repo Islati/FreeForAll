@@ -2,7 +2,7 @@ package com.caved_in.freeforall.commands;
 
 import com.caved_in.commons.commands.CommandController;
 import com.caved_in.commons.menu.HelpScreen;
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.Game;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -34,8 +34,8 @@ public class GameCommand {
 
 		HelpScreen.setEntry("/game help", "Shows this menu of commands");
 		HelpScreen.setEntry("/game reload", "Reloads all the config (Shop-data, guns, and messages)");
-		HelpScreen.setEntry("/setteamspean [T/CT]", "Adds a spawnpoint for the specified team");
-		HelpScreen.setEntry("/forcewin [T/CT]", "Force a team to win so the round will re-start");
+		HelpScreen.setEntry("/addspawn", "Adds a spawnpoint for the specified team");
+		HelpScreen.setEntry("/forcewin", "Force a team to win so the round will re-start");
 		HelpScreen.setEntry("/forcemap <Map>", "Forces a map change to the given map");
 		HelpScreen.setEntry("/forcemap list", "List all available maps");
 		int page = 1;
@@ -49,6 +49,6 @@ public class GameCommand {
 	public void ongameReloadCommand(CommandSender sender, String[] args) {
 		Game.gunHandler.initData();
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "shot config reload");
-		PlayerHandler.sendMessage(sender, "&a[Tunnels] GunData and ShopData reloaded");
+		Players.sendMessage(sender, "&a[Tunnels] Gun Configuration, Perk Configuration and Shop Data reloaded");
 	}
 }

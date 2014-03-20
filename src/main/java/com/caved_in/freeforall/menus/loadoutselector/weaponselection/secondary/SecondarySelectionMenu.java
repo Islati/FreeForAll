@@ -1,6 +1,6 @@
 package com.caved_in.freeforall.menus.loadoutselector.weaponselection.secondary;
 
-import com.caved_in.commons.menu.MenuHandler;
+import com.caved_in.commons.menu.Menus;
 import me.xhawk87.PopupMenuAPI.PopupMenu;
 import me.xhawk87.PopupMenuAPI.PopupMenuAPI;
 
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class SecondarySelectionMenu {
 	public static PopupMenu getMenu(List<SecondarySelectionItem> secondarySelectionItems) {
-		PopupMenu psMenu = PopupMenuAPI.createMenu("Select a Secondary", MenuHandler.getRows(secondarySelectionItems.size()));
+		PopupMenu psMenu = PopupMenuAPI.createMenu("Select a Secondary", Menus.getRows(secondarySelectionItems.size()));
 		int i = 0;
 		for (SecondarySelectionItem selectionItem : secondarySelectionItems) {
 			if (selectionItem.getIcon() == null) {

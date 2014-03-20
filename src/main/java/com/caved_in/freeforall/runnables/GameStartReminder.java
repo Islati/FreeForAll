@@ -1,6 +1,6 @@
 package com.caved_in.freeforall.runnables;
 
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.Game;
 import com.caved_in.freeforall.gamehandler.GameSetupHandler;
 
@@ -25,7 +25,7 @@ public class GameStartReminder implements Runnable {
 			Game.runnableManager.registerSynchRepeatTask("GameEndCheck", new GameOverRunnable(), 40L, 40L);
 			Game.runnableManager.registerSynchRepeatTask("ValidateMap", new ValidateMap(), 120L, 60L);
 		} else {
-			PlayerHandler.sendMessageToAllPlayers("&aThe round will begin in &e" + (messageCooldown - (currentTicks * 5)) + "&a seconds!");
+			Players.messageAll("&aThe round will begin in &e" + (messageCooldown - (currentTicks * 5)) + "&a seconds!");
 			Game.gameStartTime = (messageCooldown - currentTicks);
 			currentTicks += 1;
 		}

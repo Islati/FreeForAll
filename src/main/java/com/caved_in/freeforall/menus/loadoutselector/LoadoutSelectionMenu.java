@@ -1,7 +1,7 @@
 package com.caved_in.freeforall.menus.loadoutselector;
 
-import com.caved_in.commons.items.ItemHandler;
-import com.caved_in.commons.menu.MenuHandler;
+import com.caved_in.commons.item.Items;
+import com.caved_in.commons.menu.Menus;
 import com.caved_in.freeforall.Game;
 import com.caved_in.freeforall.fakeboard.FakeboardHandler;
 import com.caved_in.freeforall.fakeboard.GamePlayer;
@@ -29,12 +29,12 @@ public class LoadoutSelectionMenu {
 		GamePlayer gamePlayer = FakeboardHandler.getPlayer(playerName);
 		gamePlayer.setAfk(true, false);
 		int loadoutLimit = gamePlayer.getLoadoutLimit();
-		sLoadout = PopupMenuAPI.createMenu("Select a Loadout", MenuHandler.getRows(loadoutLimit));
+		sLoadout = PopupMenuAPI.createMenu("Select a Loadout", Menus.getRows(loadoutLimit));
 		for (int I = 0; I < loadoutLimit; I++) {
 			int loadoutNumber = I + 1;
 			LoadoutSelectionItem loadoutItem = new LoadoutSelectionItem("Loadout #" + loadoutNumber, new MaterialData(Material.CHEST), loadoutNumber);
-			loadoutItem.setDescriptions(Arrays.asList(ItemHandler.getItemName(Game.crackShotAPI.generateWeapon(gamePlayer.getPrimaryGunID(loadoutNumber))),
-					ItemHandler.getItemName(Game.crackShotAPI.generateWeapon(gamePlayer.getSecondaryGunID(loadoutNumber)))));
+			loadoutItem.setDescriptions(Arrays.asList(Items.getName(Game.crackShotAPI.generateWeapon(gamePlayer.getPrimaryGunID(loadoutNumber))),
+					Items.getName(Game.crackShotAPI.generateWeapon(gamePlayer.getSecondaryGunID(loadoutNumber)))));
 			sLoadout.addMenuItem(loadoutItem, I);
 		}
 		sLoadout.setExitOnClickOutside(false);

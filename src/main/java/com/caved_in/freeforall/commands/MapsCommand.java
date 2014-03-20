@@ -4,7 +4,7 @@ import com.caved_in.commons.Messages;
 import com.caved_in.commons.commands.CommandController;
 import com.caved_in.commons.commands.HelpMenus;
 import com.caved_in.commons.menu.HelpScreen;
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.Game;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -40,7 +40,7 @@ public class MapsCommand {
 			if (StringUtils.isNumeric(pageArg)) {
 				page = Integer.parseInt(pageArg);
 			} else {
-				PlayerHandler.sendMessage(player, Messages.INVALID_COMMAND_USAGE("page number"));
+				Players.sendMessage(player, Messages.INVALID_COMMAND_USAGE("page number"));
 			}
 		}
 		getMapsMenu().sendTo(player, page, 6);

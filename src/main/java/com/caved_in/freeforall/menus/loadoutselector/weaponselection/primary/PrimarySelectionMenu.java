@@ -1,6 +1,6 @@
 package com.caved_in.freeforall.menus.loadoutselector.weaponselection.primary;
 
-import com.caved_in.commons.menu.MenuHandler;
+import com.caved_in.commons.menu.Menus;
 import me.xhawk87.PopupMenuAPI.PopupMenu;
 import me.xhawk87.PopupMenuAPI.PopupMenuAPI;
 
@@ -17,7 +17,7 @@ import java.util.List;
 public class PrimarySelectionMenu {
 
 	public static PopupMenu getMenu(List<PrimarySelectionItem> primarySelectionItems) {
-		PopupMenu psMenu = PopupMenuAPI.createMenu("Select a Weapon", MenuHandler.getRows(primarySelectionItems.size()));
+		PopupMenu psMenu = PopupMenuAPI.createMenu("Select a Weapon", Menus.getRows(primarySelectionItems.size()));
 		int i = 0;
 		for(PrimarySelectionItem primarySelectionItem : primarySelectionItems) {
 			if (primarySelectionItem.getIcon() != null) {

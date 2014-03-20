@@ -2,9 +2,9 @@ package com.caved_in.freeforall.commands;
 
 import com.caved_in.commons.Messages;
 import com.caved_in.commons.commands.CommandController;
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.Game;
-import com.caved_in.freeforall.TeamType;
+import com.caved_in.freeforall.config.WorldSpawns;
 import org.bukkit.entity.Player;
 
 /**
@@ -20,9 +20,12 @@ public class SpawnsCommand {
 	@CommandController.CommandHandler(name = "spawns", permission = "gungame.spawn")
 	public void onSpawnCommand(Player player, String[] args) {
 		if (args.length > 0) {
-			PlayerHandler.sendMessage(player, String.format("&e%s&a has &e%s&a spawns in world &7%s", args[0].equalsIgnoreCase(TeamType.TERRORIST.toString()) ? "terrorist" : "counter terrorist", Game.configuration.getSpawnConfiguration().getWorldSpawns(player.getWorld().getName()).getSpawnLocations(TeamType.getTeamByInitials(args[0])).size(), player.getWorld().getName()));
+			WorldSpawns worldSpawns = Game.getSpawns(player);
+			int spawnCount = worldSpawns.getSpawnCount();
+			String worldName = Players.getWorldName(player);
+			Players.sendMessage(player, String.format("&e%s&a spawns in world &7%s", spawnCount, worldName));
 		} else {
-			PlayerHandler.sendMessage(player, Messages.INVALID_COMMAND_USAGE("Team"));
+			Players.sendMessage(player, Messages.INVALID_COMMAND_USAGE("Team"));
 		}
 	}
 }

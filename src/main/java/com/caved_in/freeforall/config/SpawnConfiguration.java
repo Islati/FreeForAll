@@ -1,5 +1,7 @@
 package com.caved_in.freeforall.config;
 
+import com.caved_in.commons.location.Locations;
+import org.bukkit.Location;
 import org.simpleframework.xml.ElementList;
 
 import java.util.ArrayList;
@@ -22,8 +24,7 @@ public class SpawnConfiguration {
 
 	private Map<String, WorldSpawns> worldSpawnLocations = new HashMap<>();
 
-	public SpawnConfiguration(@ElementList(name = "spawnpoints", type = XmlSpawnPoint.class)
-							  List<XmlSpawnPoint> spawnPoints) {
+	public SpawnConfiguration(@ElementList(name = "spawnpoints", type = XmlSpawnPoint.class) List<XmlSpawnPoint> spawnPoints) {
 		this.spawnPoints = spawnPoints;
 		initializeTeamSpawns();
 	}
@@ -41,12 +42,12 @@ public class SpawnConfiguration {
 			//Check if our worldSpawns lists has an entry for this world already
 			if (worldSpawnLocations.containsKey(worldName)) {
 				//Add a teamspawnlocation to the instance for this world
-				worldSpawnLocations.get(worldName).add(new TeamSpawnLocation(xmlSpawnPoint));
+				worldSpawnLocations.get(worldName).add(xmlSpawnPoint);
 			} else {
 				//Create our worldSpawns object for the given world
 				WorldSpawns worldSpawns = new WorldSpawns(worldName);
 				//Add a new TeamSpawnObject based on the current xmlspawnpoint
-				worldSpawns.add(new TeamSpawnLocation(xmlSpawnPoint));
+				worldSpawns.add(xmlSpawnPoint);
 				//Add our worldSpawns object to the map of elements
 				worldSpawnLocations.put(worldName, worldSpawns);
 			}
@@ -61,10 +62,10 @@ public class SpawnConfiguration {
 	}
 
 
-	public void addSpawn(TeamSpawnLocation teamSpawnLocation) {
-		String worldName = teamSpawnLocation.getLocation().getWorld().getName();
-		getWorldSpawns(worldName).add(teamSpawnLocation);
-		spawnPoints.add(new XmlSpawnPoint(teamSpawnLocation));
+	public void addSpawn(Location location) {
+		String worldName = Locations.getWorldName(location);
+		getWorldSpawns(worldName).add(location);
+		spawnPoints.add(new XmlSpawnPoint(location));
 	}
 
 }

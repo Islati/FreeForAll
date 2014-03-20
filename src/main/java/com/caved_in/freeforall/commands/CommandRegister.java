@@ -15,7 +15,7 @@ public class CommandRegister {
 	public CommandRegister(Game Plugin) {
 		CommandController.registerCommands(Plugin, new ForcemapCommand());
 		CommandController.registerCommands(Plugin, new ForcewinCommand());
-		CommandController.registerCommands(Plugin, new SetteamspawnCommand());
+		CommandController.registerCommands(Plugin, new AddSpawnpointCommand());
 		CommandController.registerCommands(Plugin, new SpawnsCommand());
 		CommandController.registerCommands(Plugin, new AfkCommand());
 		CommandController.registerCommands(Plugin, new MapsCommand());

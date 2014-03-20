@@ -1,6 +1,6 @@
 package com.caved_in.freeforall.menus.loadoutselector;
 
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.menus.loadoutselector.weaponselection.selectiontypemenu.SelectionMenu;
 import me.xhawk87.PopupMenuAPI.MenuItem;
 import org.bukkit.entity.Player;
@@ -25,7 +25,7 @@ public class LoadoutCreationItem extends MenuItem {
 	@Override
 	public void onClick(Player player) {
 		this.getMenu().switchMenu(player, new SelectionMenu(this.loadoutNumber).getMenu());
-		PlayerHandler.sendMessage(player, "&aSelect which item you're editing; Primary or Secondary?");
+		Players.sendMessage(player, "&aSelect which item you're editing; Primary or Secondary?");
 	}
 
 }

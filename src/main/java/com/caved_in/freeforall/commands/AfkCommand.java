@@ -1,7 +1,7 @@
 package com.caved_in.freeforall.commands;
 
 import com.caved_in.commons.commands.CommandController;
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.Game;
 import com.caved_in.freeforall.fakeboard.FakeboardHandler;
 import com.caved_in.freeforall.fakeboard.GamePlayer;
@@ -30,7 +30,7 @@ public class AfkCommand {
 					Game.afkCooldown.setOnCooldown(playerName);
 				}
 			} else {
-				PlayerHandler.sendMessage(player, AFK_COMMAND_ON_COOLDOWN);
+				Players.sendMessage(player, AFK_COMMAND_ON_COOLDOWN);
 			}
 		}
 	}

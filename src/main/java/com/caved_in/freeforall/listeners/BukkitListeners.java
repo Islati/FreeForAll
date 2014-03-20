@@ -1,20 +1,18 @@
 package com.caved_in.freeforall.listeners;
 
 import com.caved_in.commons.Commons;
-import com.caved_in.commons.items.ItemHandler;
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.item.Items;
+import com.caved_in.commons.player.Players;
 import com.caved_in.commons.threading.executors.BukkitExecutors;
 import com.caved_in.commons.threading.executors.BukkitScheduledExecutorService;
 import com.caved_in.commons.time.Cooldown;
-import com.caved_in.commons.world.WorldHandler;
+import com.caved_in.commons.world.Worlds;
 import com.caved_in.freeforall.Game;
 import com.caved_in.freeforall.GameMessages;
-import com.caved_in.freeforall.assists.AssistManager;
 import com.caved_in.freeforall.events.CustomEventHandler;
 import com.caved_in.freeforall.events.GamePlayerDeathEvent;
 import com.caved_in.freeforall.fakeboard.FakeboardHandler;
 import com.caved_in.freeforall.fakeboard.GamePlayer;
-import com.caved_in.freeforall.fakeboard.Team;
 import com.caved_in.freeforall.gamehandler.GameSetupHandler;
 import com.caved_in.freeforall.runnables.RestoreInventory;
 import com.caved_in.freeforall.scoreboard.PlayerScoreboard;
@@ -73,19 +71,19 @@ public class BukkitListeners implements Listener {
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		GamePlayer GamePlayer = FakeboardHandler.getPlayer(player);
-		String playerName = GamePlayer.getName();
+		GamePlayer gamePlayer = FakeboardHandler.getPlayer(player);
+		String playerName = gamePlayer.getName();
 
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (player.getItemInHand() != null && ItemHandler.itemNameContains(player.getItemInHand(), "Select & Edit Loadouts")) {
+			if (player.getItemInHand() != null && Items.nameContains(player.getItemInHand(), "Select & Edit Loadouts")) {
 				event.setCancelled(true);
 				//Open the loadout menu for the player
 				GameSetupHandler.openLoadoutOptionMenu(player);
 			}
 		} else if (GameSetupHandler.isGameInProgress()) {
 			if (!playerCooldown.isOnCooldown(playerName)) {
-				if (GamePlayer.isAfk()) {
-					GamePlayer.setAfk(false, false);
+				if (gamePlayer.isAfk()) {
+					gamePlayer.setAfk(false, false);
 				}
 				playerCooldown.setOnCooldown(playerName);
 			}
@@ -111,10 +109,8 @@ public class BukkitListeners implements Listener {
 			GamePlayer playerShot = FakeboardHandler.getPlayer((Player) event.getVictim());
 			String shooterName = playerShooter.getName();
 			String shotName = playerShot.getName();
-			if (playerShooter.getTeam() == playerShot.getTeam() || respawnInvincibilityCooldown.isOnCooldown(shooterName) || respawnInvincibilityCooldown.isOnCooldown(shotName) || playerShooter.isAfk() || playerShot.isAfk()) {
+			if (respawnInvincibilityCooldown.isOnCooldown(shooterName) || respawnInvincibilityCooldown.isOnCooldown(shotName) || playerShooter.isAfk() || playerShot.isAfk()) {
 				event.setCancelled(true);
-			} else {
-				AssistManager.addData(shotName, shooterName);
 			}
 		}
 	}
@@ -126,16 +122,14 @@ public class BukkitListeners implements Listener {
 		} else {
 			Entity damagedEntity = event.getEntity();
 			Entity damagerEntity = event.getDamager();
-			if (damagedEntity instanceof Player) {
-				Player damagedPlayer = (Player)damagedEntity;
+			if (damagedEntity instanceof Player && damagerEntity instanceof Player) {
+				Player damagedPlayer = (Player) damagedEntity;
+				Player damagerPlayer = (Player) damagerEntity;
 				GamePlayer damagedGamePlayer = FakeboardHandler.getPlayer(damagedPlayer);
-				if (damagerEntity instanceof Player) {
-					Player damagerPlayer = (Player)damagerEntity;
-					GamePlayer damagerGamePlayer = FakeboardHandler.getPlayer(damagerPlayer);
-					damagerGamePlayer.setAfk(false,false);
-					if (damagerGamePlayer.getTeam() == damagedGamePlayer.getTeam() || damagerGamePlayer.isAfk() || damagedGamePlayer.isAfk()) {
-						event.setCancelled(true);
-					}
+				GamePlayer damagerGamePlayer = FakeboardHandler.getPlayer(damagerPlayer);
+				damagerGamePlayer.setAfk(false, false);
+				if (damagerGamePlayer.isAfk() || damagedGamePlayer.isAfk()) {
+					event.setCancelled(true);
 				}
 			}
 		}
@@ -153,6 +147,13 @@ public class BukkitListeners implements Listener {
 		respawnInvincibilityCooldown.setOnCooldown(playerName);
 		if (GamePlayer.isAfk()) {
 			GamePlayer.setAfk(false, false);
+		}
+	}
+
+	@EventHandler
+	public void onPlayerRespawn(PlayerRespawnEvent event) {
+		if (GameSetupHandler.isGameInProgress()) {
+			event.setRespawnLocation(Game.getRandomSpawn(event.getPlayer()));
 		}
 	}
 
@@ -181,10 +182,10 @@ public class BukkitListeners implements Listener {
 				if (args.length >= argsRequired) {
 					chatCommand.doCommand(player, args);
 				} else {
-					PlayerHandler.sendMessage(player, GameMessages.INSUFFICIENT_CHAT_COMMAND_ARGUMENTS(command, argsRequired));
+					Players.sendMessage(player, GameMessages.INSUFFICIENT_CHAT_COMMAND_ARGUMENTS(command, argsRequired));
 				}
 			} else {
-				PlayerHandler.sendMessage(player, GameMessages.INVALID_CHAT_COMMAND(command));
+				Players.sendMessage(player, GameMessages.INVALID_CHAT_COMMAND(command));
 			}
 		}
 	}
@@ -194,7 +195,7 @@ public class BukkitListeners implements Listener {
 		Player player = event.getPlayer();
 		final String playerName = player.getName();
 
-		PlayerHandler.removePotionEffects(player);
+		Players.removePotionEffects(player);
 
 		ListenableFuture<Boolean> loadPlayer = async.submit(new Callable<Boolean>() {
 			@Override
@@ -209,23 +210,23 @@ public class BukkitListeners implements Listener {
 				Commons.threadManager.runTaskOneTickLater(new Runnable() {
 					@Override
 					public void run() {
-						Player player = PlayerHandler.getPlayer(playerName);
+						Player player = Players.getPlayer(playerName);
 						if (playerLoaded) {
 							if (GameSetupHandler.isGameInProgress()) {
-								GameSetupHandler.assignPlayerTeam(player);
+								GameSetupHandler.prepPlayer(player);
 								GameSetupHandler.teleportToRandomSpawn(player);
 							} else {
-								if (!PlayerHandler.getWorldName(player).equalsIgnoreCase(Game.gameMap)) {
-									PlayerHandler.teleport(player, WorldHandler.getSpawn(Game.gameMap));
+								if (!Players.getWorldName(player).equalsIgnoreCase(Game.gameMap)) {
+									Players.teleport(player, Worlds.getSpawn(Game.gameMap));
 								}
 							}
-							PlayerHandler.clearInventory(player);
+							Players.clearInventory(player);
 							GameSetupHandler.givePlayerLoadoutGem(player);
 							PlayerScoreboard playerScoreboard = new PlayerScoreboard();
 							player.setScoreboard(playerScoreboard.getScoreboard());
 							FakeboardHandler.getPlayer(playerName).setPlayerScoreboard(playerScoreboard);
 						} else {
-							PlayerHandler.kickPlayer(player, GameMessages.PLAYER_DATA_LOAD_ERROR);
+							Players.kick(player, GameMessages.PLAYER_DATA_LOAD_ERROR);
 						}
 					}
 				});
@@ -236,7 +237,7 @@ public class BukkitListeners implements Listener {
 				Commons.threadManager.runTaskOneTickLater(new Runnable() {
 					@Override
 					public void run() {
-						PlayerHandler.kickPlayer(PlayerHandler.getPlayer(playerName), GameMessages.PLAYER_DATA_LOAD_ERROR);
+						Players.kick(Players.getPlayer(playerName), GameMessages.PLAYER_DATA_LOAD_ERROR);
 					}
 				});
 				throwable.printStackTrace();
@@ -250,17 +251,7 @@ public class BukkitListeners implements Listener {
 		Player playerSending = event.getNamedPlayer();
 		String sendingName = playerSending.getName();
 		if (GameSetupHandler.isGameInProgress()) {
-			Team sendingPlayerTeam = FakeboardHandler.getTeamByPlayer(playerSending);
-			Team receivingPlayerTeam = FakeboardHandler.getTeamByPlayer(playerReceiving);
-			if (sendingPlayerTeam != null && receivingPlayerTeam != null) {
-				if (sendingPlayerTeam.getType() == receivingPlayerTeam.getType()) {
-					event.setTag(ChatColor.GREEN + sendingName);
-				} else {
-					event.setTag(ChatColor.RED + sendingName);
-				}
-			} else {
-				event.setTag(ChatColor.WHITE + sendingName);
-			}
+			event.setTag(ChatColor.RED + sendingName);
 		} else {
 			event.setTag(ChatColor.WHITE + sendingName);
 		}
@@ -269,7 +260,7 @@ public class BukkitListeners implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerQuit(PlayerQuitEvent Event) {
 		Player player = Event.getPlayer();
-		PlayerHandler.clearInventory(player);
+		Players.clearInventory(player);
 		FakeboardHandler.removePlayer(player);
 	}
 }

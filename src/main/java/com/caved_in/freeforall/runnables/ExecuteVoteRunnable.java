@@ -1,6 +1,6 @@
 package com.caved_in.freeforall.runnables;
 
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.GameMessages;
 import com.caved_in.freeforall.vote.Vote;
 import com.caved_in.freeforall.vote.VoteFactory;
@@ -20,7 +20,7 @@ public class ExecuteVoteRunnable implements Runnable {
 		if (activeVote.canExecute()) {
 			activeVote.execute();
 		} else {
-			PlayerHandler.sendMessageToAllPlayers(GameMessages.VOTE_FAILED(activeVote));
+			Players.messageAll(GameMessages.VOTE_FAILED(activeVote));
 		}
 		VoteFactory.clearActiveVote();
 	}

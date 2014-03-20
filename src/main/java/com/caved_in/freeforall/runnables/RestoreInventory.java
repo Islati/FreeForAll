@@ -1,5 +1,6 @@
 package com.caved_in.freeforall.runnables;
 
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.fakeboard.FakeboardHandler;
 import com.caved_in.freeforall.fakeboard.GamePlayer;
 import com.caved_in.freeforall.gamehandler.GameSetupHandler;
@@ -31,9 +32,7 @@ public class RestoreInventory implements Runnable {
 		Player rPlayer = Bukkit.getPlayer(playerName);
 		if (rPlayer != null) {
 			GamePlayer gamePlayer = FakeboardHandler.getPlayer(rPlayer);
-			GameSetupHandler.teleportToRandomSpawn(rPlayer, gamePlayer.getTeam());
-
-			rPlayer.getInventory().setArmorContents(GameSetupHandler.getTeamArmor(gamePlayer.getTeam()));
+			Players.setArmor(rPlayer, GameSetupHandler.getArmor());
 
 			Perk playerPerk = gamePlayer.getActivePerk();
 			if (playerPerk != null) {
@@ -43,10 +42,9 @@ public class RestoreInventory implements Runnable {
 					}
 				}
 			}
-			rPlayer.getInventory().setContents(this.inventory);
+			rPlayer.getInventory().setContents(inventory);
 			rPlayer.updateInventory();
 		}
-
 	}
 
 }

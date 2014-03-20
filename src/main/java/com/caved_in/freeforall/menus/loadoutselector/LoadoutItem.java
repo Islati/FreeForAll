@@ -1,7 +1,7 @@
 package com.caved_in.freeforall.menus.loadoutselector;
 
 
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.gamehandler.GameSetupHandler;
 import me.xhawk87.PopupMenuAPI.MenuItem;
 import org.bukkit.Material;
@@ -32,7 +32,7 @@ public class LoadoutItem extends MenuItem {
 				if (GameSetupHandler.isGameInProgress()) {
 					getMenu().switchMenu(player, new LoadoutSelectionMenu(player).getMenu());
 				} else {
-					PlayerHandler.sendMessage(player, "&eYou can't select a class to use until the game begins");
+					Players.sendMessage(player, "&eYou can't select a class to use until the game begins");
 				}
 				break;
 			case EDIT:

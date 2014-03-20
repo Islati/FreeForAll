@@ -1,6 +1,6 @@
 package com.caved_in.freeforall.menus.loadoutselector.weaponselection.tertiary;
 
-import com.caved_in.commons.menu.MenuHandler;
+import com.caved_in.commons.menu.Menus;
 import me.xhawk87.PopupMenuAPI.PopupMenu;
 import me.xhawk87.PopupMenuAPI.PopupMenuAPI;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ public class PerkSelectionMenu {
 
 	public PerkSelectionMenu(int loadoutSlot, Player player) {
 		List<PerkMenuItem> perkMenuItems = PerkRender.renderPerks(loadoutSlot, player);
-		perkMenu = PopupMenuAPI.createMenu("Select a perk!", MenuHandler.getRows(perkMenuItems.size()));
+		perkMenu = PopupMenuAPI.createMenu("Select a perk!", Menus.getRows(perkMenuItems.size()));
 		for (int I = 0; I < perkMenuItems.size(); I++) {
 			perkMenu.addMenuItem(perkMenuItems.get(I), I);
 		}

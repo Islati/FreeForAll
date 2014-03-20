@@ -1,6 +1,6 @@
 package com.caved_in.freeforall.runnables;
 
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.Game;
 import com.caved_in.freeforall.config.WorldSpawns;
 import com.caved_in.freeforall.fakeboard.FakeboardHandler;
@@ -14,13 +14,13 @@ import com.caved_in.freeforall.fakeboard.GamePlayer;
  * this stuff is worth it, you can buy me a beer in return Brandon Curtis.
  * ----------------------------------------------------------------------------
  */
-public class TeleportTeams implements Runnable {
+public class TeleportPlayers implements Runnable {
 
 	@Override
 	public void run() {
 		WorldSpawns worldSpawns = Game.configuration.getSpawnConfiguration().getWorldSpawns(Game.gameMap);
-		for(GamePlayer gamePlayer : FakeboardHandler.getOnlineGameplayers()) {
-			PlayerHandler.teleport(gamePlayer.getPlayer(), worldSpawns.getRandomSpawn(gamePlayer.getTeam()).getLocation());
+		for(GamePlayer gamePlayer : FakeboardHandler.getGamePlayers()) {
+			Players.teleport(gamePlayer.getPlayer(), worldSpawns.getRandomSpawn());
 		}
 	}
 

@@ -1,11 +1,11 @@
 package com.caved_in.freeforall.config;
 
-import com.caved_in.commons.location.LocationHandler;
-import com.caved_in.freeforall.TeamType;
+import com.caved_in.commons.location.Locations;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
 
 /**
  * ----------------------------------------------------------------------------
@@ -15,11 +15,9 @@ import org.simpleframework.xml.Element;
  * this stuff is worth it, you can buy me a beer in return Brandon Curtis.
  * ----------------------------------------------------------------------------
  */
+@Root(name = "Spawn_Location")
 public class XmlSpawnPoint {
-	@Attribute(name = "team_name")
-	private String teamName = "t";
-
-	@Element(name = "worldName")
+	@Attribute(name = "worldName")
 	private String worldName = "world";
 
 	@Element(name = "locX")
@@ -31,18 +29,20 @@ public class XmlSpawnPoint {
 	@Element(name = "locZ")
 	private int locZ = 0;
 
-	private TeamType teamType = TeamType.TERRORIST;
-
 	private Location spawnLocation;
 
-	public XmlSpawnPoint(@Attribute(name = "team_name") String teamName,
-						 @Element(name = "worldName") String worldName,
-						 @Element(name = "locX") int locX,
-						 @Element(name = "locY") int locY,
-						 @Element(name = "locZ") int locZ
-	) {
-		this.teamName = teamName;
-		this.teamType = TeamType.getTeamByInitials(teamName);
+	public XmlSpawnPoint() { }
+
+	public XmlSpawnPoint(Location spawnLocation) {
+		this.spawnLocation = spawnLocation;
+		int[] xyz = Locations.getXYZ(spawnLocation);
+		this.locX = xyz[0];
+		this.locY = xyz[1];
+		this.locZ = xyz[2];
+		this.worldName = spawnLocation.getWorld().getName();
+	}
+
+	public XmlSpawnPoint(@Attribute(name = "worldName") String worldName, @Element(name = "locX") int locX, @Element(name = "locY") int locY, @Element(name = "locZ") int locZ) {
 		this.worldName = worldName;
 		this.locX = locX;
 		this.locY = locY;
@@ -50,31 +50,9 @@ public class XmlSpawnPoint {
 		this.spawnLocation = new Location(Bukkit.getWorld(worldName), locX, locY, locZ);
 	}
 
-	public XmlSpawnPoint(TeamType teamType, Location spawnLocation) {
-		this.spawnLocation = spawnLocation;
-		int[] xyz = LocationHandler.getXYZ(spawnLocation);
-		this.locX = xyz[0];
-		this.locY = xyz[1];
-		this.locZ = xyz[2];
-		this.worldName = spawnLocation.getWorld().getName();
-		this.teamType = teamType;
-		this.teamName = teamType.toString();
-	}
-
-	public XmlSpawnPoint() {
-
-	}
-
-	public XmlSpawnPoint(TeamSpawnLocation teamSpawnLocation) {
-		this(teamSpawnLocation.getTeamType(), teamSpawnLocation.getLocation());
-	}
 
 	public Location getLocation() {
 		return spawnLocation;
-	}
-
-	public TeamType getTeamType() {
-		return teamType;
 	}
 
 	public String getWorldName() {

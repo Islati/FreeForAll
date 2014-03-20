@@ -22,6 +22,7 @@ public class GameMessages {
 	public static final String SELECT_PRIMARY_WEAPON_TYPE = "&aSelect your primary weapon type";
 	public static final String SELECT_SECONDARY_WEAPON_TYPE = "&aSelect your secondary weapon type";
 	public static final String SELECT_ACTIVE_PERK = "&aSelect your active perk";
+	public static final String USE_MAPS_COMMAND = "&eUse the command &a/maps&e to see a list of available maps";
 
 	public static String MAP_CHANGED(String to) {
 		return String.format("&7The map has been changed to &l%s", to);

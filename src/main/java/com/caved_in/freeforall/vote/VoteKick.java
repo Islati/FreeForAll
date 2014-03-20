@@ -2,7 +2,7 @@ package com.caved_in.freeforall.vote;
 
 import com.caved_in.commons.Commons;
 import com.caved_in.commons.Messages;
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.commons.utilities.StringUtil;
 import com.caved_in.freeforall.GameMessages;
 
@@ -40,8 +40,8 @@ public class VoteKick extends Vote {
 		Commons.threadManager.runTaskOneTickLater(new Runnable() {
 			@Override
 			public void run() {
-				PlayerHandler.kickPlayer(PlayerHandler.getPlayer(playerToKick), kickReason);
-				PlayerHandler.sendMessageToAllPlayers(Messages.PLAYER_KICKED(playerToKick, kickReason));
+				Players.kick(Players.getPlayer(playerToKick), kickReason);
+				Players.messageAll(Messages.PLAYER_KICKED(playerToKick, kickReason));
 			}
 		});
 	}
@@ -49,6 +49,6 @@ public class VoteKick extends Vote {
 	@Override
 	public void announce() {
 		String voteKick = GameMessages.ANNOUNCE_VOTE_PLAYER_KICK(getCaster(), playerToKick, kickReason);
-		PlayerHandler.sendMessageToAllPlayers(voteKick);
+		Players.messageAll(voteKick);
 	}
 }

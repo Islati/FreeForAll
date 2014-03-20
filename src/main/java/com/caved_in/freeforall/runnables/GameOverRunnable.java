@@ -1,9 +1,9 @@
 package com.caved_in.freeforall.runnables;
 
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.Game;
-import com.caved_in.freeforall.TeamType;
 import com.caved_in.freeforall.fakeboard.FakeboardHandler;
+import com.caved_in.freeforall.fakeboard.GamePlayer;
 import com.caved_in.freeforall.gamehandler.GameSetupHandler;
 
 /**
@@ -21,7 +21,7 @@ public class GameOverRunnable implements Runnable {
 	@Override
 	public void run() {
 		//Check if we've got no players online
-		if (PlayerHandler.getOnlinePlayersCount() <= 0) {
+		if (Players.getOnlineCount() <= 0) {
 			//No players online? Stop the game!
 			GameSetupHandler.setGameInProgress(false);
 			gameCurrentTicks = 0;
@@ -29,27 +29,25 @@ public class GameOverRunnable implements Runnable {
 			Game.runnableManager.runTaskLater(new Runnable() {
 				@Override
 				public void run() {
-					Game.rotateMap(true);
+					Game.rotateMap();
 				}
 			}, 100L);
 			Game.runnableManager.cancelTask("GameEndCheck");
 			return;
 		}
-		//Get the scores for both teams; Terrorist and CounterTerrorist
-		int terroristScore = FakeboardHandler.getTeam(TeamType.TERRORIST).getTeamScore();
-		int counterTerroristScore = FakeboardHandler.getTeam(TeamType.COUNTER_TERRORIST).getTeamScore();
-
+		GamePlayer leadingPlayer = FakeboardHandler.getTopPlayer();
+		int leadingSore = leadingPlayer.getPlayerScore();
 		//Check if the game has been running for less than 10 minutes
 		boolean gameTimeExpired = gameCurrentTicks >= gameStopTicks;
-		if ((terroristScore >= 50 || counterTerroristScore >= 50) || gameTimeExpired) {
+		if (leadingSore >= 75 || gameTimeExpired) {
 			GameSetupHandler.setGameInProgress(false);
 			gameCurrentTicks = 0;
-			PlayerHandler.sendMessageToAllPlayers(String.format(gameTimeExpired ? "TIMES UP; &6%s WIN!" : "&6%s WIN!", terroristScore >= 50 ? "TERRORISTS" : "COUNTER TERRORISTS"));
-			GameSetupHandler.awardEndgamePoints(terroristScore >= 50 ? TeamType.TERRORIST : TeamType.COUNTER_TERRORIST, 75, 50);
+			Players.messageAll(String.format(gameTimeExpired ? "&6Time's up, good game everyone! &a%s&6 took first place." : "&a%s&6 reached the max-score", leadingPlayer.getName()));
+			GameSetupHandler.awardEndgamePoints(FakeboardHandler.getTopPlayer().getName(), 50, 25);
 			Game.runnableManager.runTaskLater(new Runnable() {
 				@Override
 				public void run() {
-					Game.rotateMap(true);
+					Game.rotateMap();
 				}
 			}, 100L);
 			Game.runnableManager.cancelTask("GameEndCheck");

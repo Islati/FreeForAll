@@ -1,16 +1,14 @@
 package com.caved_in.freeforall.events;
 
-import com.caved_in.commons.player.PlayerHandler;
 import com.caved_in.commons.player.PlayerWrapper;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.Game;
 import com.caved_in.freeforall.fakeboard.FakeboardHandler;
 import com.caved_in.freeforall.fakeboard.GamePlayer;
-import com.caved_in.freeforall.fakeboard.Team;
 import com.caved_in.freeforall.gamehandler.GameSetupHandler;
 import com.caved_in.freeforall.gamehandler.KillstreakHandler;
 import com.caved_in.freeforall.guns.GunWrapper;
 import com.caved_in.freeforall.perks.Perk;
-import com.caved_in.freeforall.runnables.AssistAggregator;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -44,10 +42,6 @@ public class CustomEventHandler {
 		if (playerKiller != null) {
 			GamePlayer killingPlayer = FakeboardHandler.getPlayer(playerKiller);
 			if (killingPlayer != null && gamePlayerKilled != null) {
-				//Get the team of the killing player
-				Team killerTeam = FakeboardHandler.getTeam(killingPlayer.getTeam());
-				//Add score to the killing team
-				killerTeam.addTeamScore(1);
 				//Add a death to the player who was killed
 				gamePlayerKilled.addDeath();
 				//Add +1 score to the player who killed
@@ -56,14 +50,9 @@ public class CustomEventHandler {
 				killingPlayer.addKillstreak();
 				KillstreakHandler.HandleKillStreak(killingPlayer);
 				gamePlayerKilled.resetKillstreak();
-
-				final String killerName = killingPlayer.getName();
-				final String killedName = gamePlayerKilled.getName();
-
-				Game.runnableManager.runTaskLater(new AssistAggregator(killedName, killerName), 5);
 			}
 		}
-		PlayerHandler.clearInventory(player);
+		Players.clearInventory(player);
 		player.setScoreboard(gamePlayerKilled.getPlayerScoreboard().getScoreboard());
 	}
 
@@ -87,18 +76,18 @@ public class CustomEventHandler {
 			GunWrapper gunData = event.getGun();
 			String gunID = gunData.getGunName();
 			//Get the wrapped player data from commons
-			PlayerWrapper playerWrapper = PlayerHandler.getData(player.getName());
+			PlayerWrapper playerWrapper = Players.getData(player.getName());
 			double playerBalance = playerWrapper.getCurrency();
 			//Check if the player has enough XP to purchase the gun
 			if (playerBalance >= gunData.getGunPrice()) {
 				playerWrapper.removeCurrency(gunData.getGunPrice());
-				PlayerHandler.updateData(playerWrapper);
+				Players.updateData(playerWrapper);
 				gamePlayer.unlockGun(gunID);
-				PlayerHandler.sendMessage(player, String.format("&bYou've unlocked the &e%s&b! You have &a%s&b Tunnels XP Remaining", gunID, (int) playerWrapper.getCurrency()));
+				Players.sendMessage(player, String.format("&bYou've unlocked the &e%s&b! You have &a%s&b Tunnels XP Remaining", gunID, (int) playerWrapper.getCurrency()));
 				gamePlayer.getLoadout(event.getLoadoutNumber()).setPrimary(gunID);
-				PlayerHandler.sendMessage(player, String.format("&aThe &e%s&a is now your primary weapon for loadout #&e%s", gunID, event.getLoadoutNumber()));
+				Players.sendMessage(player, String.format("&aThe &e%s&a is now your primary weapon for loadout #&e%s", gunID, event.getLoadoutNumber()));
 			} else {
-				PlayerHandler.sendMessage(player, "&cYou don't have enough XP to unlock this.");
+				Players.sendMessage(player, "&cYou don't have enough XP to unlock this.");
 			}
 		}
 	}
@@ -116,7 +105,7 @@ public class CustomEventHandler {
 			GamePlayer gamePlayer = event.getGamePlayer();
 			int selectedLoadout = event.getLoadout().getNumber();
 			//Clear the players inventory
-			PlayerHandler.clearInventory(player, false);
+			Players.clearInventory(player, false);
 			//Set the active loadout
 			gamePlayer.setActiveLoadout(selectedLoadout);
 			//Give them their primary and secondary weapons

@@ -1,16 +1,15 @@
 package com.caved_in.freeforall.fakeboard;
 
-import com.caved_in.commons.player.PlayerHandler;
-import com.caved_in.freeforall.TeamType;
+import com.caved_in.commons.player.Players;
 import com.google.common.collect.Sets;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
+import static ch.lambdaj.Lambda.maxFrom;
 /**
  * ----------------------------------------------------------------------------
  * "THE BEER-WARE LICENSE" (Revision 42):
@@ -20,14 +19,7 @@ import java.util.Set;
  * ----------------------------------------------------------------------------
  */
 public class FakeboardHandler {
-	private static final Map<TeamType, Team> activeTeams = new HashMap<>();
 	private static final Map<String, GamePlayer> activePlayers = new HashMap<>();
-
-	public static void registerTeam(TeamType team) {
-		Team newTeam = new Team(team);
-		newTeam.setFriendlyFire(false);
-		activeTeams.put(team, newTeam);
-	}
 
 	public static boolean loadPlayer(String playerName) {
 		try {
@@ -40,27 +32,12 @@ public class FakeboardHandler {
 		}
 	}
 
-
 	public static GamePlayer getPlayer(String playerName) {
 		return activePlayers.get(playerName);
 	}
 
 	public static GamePlayer getPlayer(Player player) {
 		return getPlayer(player.getName());
-	}
-
-	//Todo: Optimize this method, and clean this up
-	public static void cleanTeams() {
-		for (Entry<TeamType, Team> teamEntry : activeTeams.entrySet()) {
-			for (Player player : getPlayers(teamEntry.getKey())) {
-				getPlayer(player).setTeam(null);
-				resetScores(player);
-				removeFromTeam(teamEntry.getKey(), player);
-				PlayerHandler.clearInventory(player);
-				PlayerHandler.removePotionEffects(player);
-			}
-		}
-		activeTeams.clear();
 	}
 
 	public static void resetScores(Player player) {
@@ -70,60 +47,45 @@ public class FakeboardHandler {
 		GamePlayer.resetKillstreak();
 	}
 
-	public static TeamType getPlayerTeam(Player player) {
-		return getPlayer(player).getTeam();
-	}
-
-	public static Team getTeamByPlayer(String playerName) {
-		GamePlayer player = getPlayer(playerName);
-		if (player != null) {
-			return getTeam(player.getTeam());
-		}
-		return null;
-	}
-
-	public static Team getTeamByPlayer(Player player) {
-		return getTeamByPlayer(player.getName());
-	}
-
-	public static boolean removeFromTeam(TeamType team, Player player) {
-		return activeTeams.get(team).removePlayer(player);
-	}
-
-	public static boolean addToTeam(TeamType team, GamePlayer player) {
-		Team addingTeam = activeTeams.get(team);
-		if (addingTeam != null && !addingTeam.hasPlayer(player)) {
-			addingTeam.addPlayer(player);
-			return true;
-		}
-		return false;
-	}
-
-	public static void setFriendlyFire(TeamType team, boolean friendlyFire) {
-		activeTeams.get(team).setFriendlyFire(friendlyFire);
-	}
-
-	public static Set<Player> getPlayers(TeamType team) {
-		Set<Player> players = new HashSet<>();
-		for (GamePlayer teamPlayer : activeTeams.get(team).getTeamMembers()) {
-			Player player = teamPlayer.getPlayer();
-			if (player != null) {
-				players.add(player);
-			}
-		}
-		return players;
-	}
-
-	public static Set<GamePlayer> getOnlineGameplayers() {
+	public static Set<GamePlayer> getGamePlayers() {
 		return Sets.newHashSet(activePlayers.values());
 	}
 
-	public static Team getTeam(TeamType team) {
-		return activeTeams.get(team);
+	public static Set<GamePlayer> getGamePlayersExcept(String... exceptions) {
+		Set<GamePlayer> gamePlayers = new HashSet<>();
+		Set<String> names = Sets.newHashSet(exceptions);
+		for (Map.Entry<String, GamePlayer> entry : activePlayers.entrySet()) {
+			if (!names.contains(entry.getKey())) {
+				gamePlayers.add(entry.getValue());
+			}
+		}
+		return gamePlayers;
 	}
 
 	public static void removePlayer(Player player) {
 		activePlayers.remove(player.getName());
 	}
 
+	public static int getHighestScore() {
+		return maxFrom(activePlayers.values()).getPlayerScore();
+	}
+
+	public static GamePlayer getTopPlayer() {
+		int highestScore = getHighestScore();
+		for(GamePlayer gamePlayer : activePlayers.values()) {
+			if (highestScore == gamePlayer.getPlayerScore()) {
+				return gamePlayer;
+			}
+		}
+		throw new RuntimeException("Not able to get highest scoring player, as there are no players on");
+	}
+
+	public static void resetPlayerData() {
+		for(GamePlayer gamePlayer : activePlayers.values()) {
+			gamePlayer.resetDeaths();
+			gamePlayer.resetKillstreak();
+			gamePlayer.setPlayerScore(0);
+			Players.clearInventory(gamePlayer.getPlayer(), true);
+		}
+	}
 }

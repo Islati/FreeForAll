@@ -1,11 +1,9 @@
 package com.caved_in.freeforall.commands;
 
 import com.caved_in.commons.commands.CommandController;
-import com.caved_in.commons.menu.HelpScreen;
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.Game;
-import com.caved_in.freeforall.menus.help.HelpMenus;
-import org.apache.commons.lang.StringUtils;
+import com.caved_in.freeforall.GameMessages;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
@@ -30,37 +28,20 @@ public class ForcemapCommand {
 			//Get the name of the map they included as an argument
 			String mapSelection = args[0];
 			//Check if the argument isn't a map name, and rather list
-			if (mapSelection.equalsIgnoreCase("list")) {
-				//Get the help menu which lists all available maps
-				HelpScreen forcemapHelp = HelpMenus.getAdminCommandsHelp();
-				//Check if they included a page number aswell!
-				if (args.length == 1) {
-					//They didn't include a page number, so send them the first page
-					forcemapHelp.sendTo(sender, 1, 7);
-				} else {
-					//They included a second argument, so get it
-					String pageGet = args[1];
-					//Check if the second argument is a number
-					if (StringUtils.isNumeric(pageGet)) {
-						//Its a number! Send them to the page they want
-						forcemapHelp.sendTo(sender, Integer.parseInt(pageGet), 7);
-					}
-				}
-				//They didn't want a list of the maps
+
+			//Now we get the list of all available maps
+			List<String> worldList = Game.worldList.getContentsAsList();
+			//Check if the world list contains the map they requested
+			if (worldList.contains(mapSelection)) {
+				//Send the player a message saying we forced a map change
+				Players.sendMessage(sender, String.format("&aMap forced to &7%s", mapSelection));
+				//Actually change the map
+				Game.gameMap = mapSelection;
 			} else {
-				//Now we get the list of all available maps
-				List<String> worldList = Game.worldList.getContentsAsList();
-				//Check if the world list contains the map they requested
-				if (worldList.contains(mapSelection)) {
-					//Send the player a message saying we forced a map change
-					PlayerHandler.sendMessage(sender, String.format("&aMap forced to &7%s", mapSelection));
-					//Actually change the map
-					Game.gameMap = mapSelection;
-				} else {
-					//The map they requested doesn't exist; Send them the command to see all the maps
-					PlayerHandler.sendMessage(sender, "&eDo &a/forcemap list&e to see a list of available maps");
-				}
+				//The map they requested doesn't exist; Send them the command to see all the maps
+				Players.sendMessage(sender, GameMessages.USE_MAPS_COMMAND);
 			}
+
 		}
 	}
 }

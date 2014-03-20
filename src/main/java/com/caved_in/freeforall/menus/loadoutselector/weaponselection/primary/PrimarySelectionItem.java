@@ -1,7 +1,7 @@
 package com.caved_in.freeforall.menus.loadoutselector.weaponselection.primary;
 
-import com.caved_in.commons.items.ItemHandler;
-import com.caved_in.commons.player.PlayerHandler;
+import com.caved_in.commons.item.Items;
+import com.caved_in.commons.player.Players;
 import com.caved_in.freeforall.events.CustomEventHandler;
 import com.caved_in.freeforall.events.GunPurchaseEvent;
 import com.caved_in.freeforall.fakeboard.FakeboardHandler;
@@ -31,10 +31,10 @@ public class PrimarySelectionItem extends MenuItem {
 	private boolean hasAlreadyClicked = false;
 
 	public PrimarySelectionItem(GunWrapper gunWrapper, ItemStack gunItemStack, int loadoutNumber, boolean purchased) {
-		super(ItemHandler.getItemName(gunItemStack), new MaterialData(gunItemStack.getType()));
+		super(Items.getName(gunItemStack), new MaterialData(gunItemStack.getType()));
 		this.gunData = gunWrapper;
 		this.gunID = gunWrapper.getGunName();
-		List<String> itemDescription = ItemHandler.getItemLore(gunItemStack);
+		List<String> itemDescription = Items.getLore(gunItemStack);
 		itemDescription.add("");
 		itemDescription.add(purchased ? ChatColor.GREEN + "You've unlocked this Item!" : ChatColor.AQUA + "Costs " + gunData.getGunPrice() + " XP to unlock");
 		this.setDescriptions(itemDescription);
@@ -47,13 +47,13 @@ public class PrimarySelectionItem extends MenuItem {
 		//Check if its a default gun or they already purchased it
 		if (gamePlayer.hasGun(gunID) || gunData.isDefaultGun() || gunData.getGunPrice() == 0) {
 			gamePlayer.getLoadout(loadoutNumber).setPrimary(gunID);
-			PlayerHandler.sendMessage(player, String.format("&aThe &e%s&a is now your primary weapon for loadout #&e%s", getText(), loadoutNumber));
+			Players.sendMessage(player, String.format("&aThe &e%s&a is now your primary weapon for loadout #&e%s", getText(), loadoutNumber));
 			getMenu().switchMenu(player, new LoadoutCreationMenu().getMenu(player));
 		} else {
 			//Check if they've already clicked this item
 			if (!hasAlreadyClicked) {
 				hasAlreadyClicked = true;
-				PlayerHandler.sendMessage(player, "&eClick again to purchase the " + getText());
+				Players.sendMessage(player, "&eClick again to purchase the " + getText());
 			} else {
 				hasAlreadyClicked = false;
 				//Second click? Create a new gun purchase event, and call it!

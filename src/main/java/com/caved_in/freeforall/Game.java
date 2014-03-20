@@ -2,8 +2,8 @@ package com.caved_in.freeforall;
 
 import com.caved_in.commons.Commons;
 import com.caved_in.commons.file.DataHandler;
-import com.caved_in.commons.player.PlayerHandler;
 import com.caved_in.commons.player.PlayerWrapper;
+import com.caved_in.commons.player.Players;
 import com.caved_in.commons.threading.RunnableManager;
 import com.caved_in.commons.time.Cooldown;
 import com.caved_in.freeforall.commands.CommandRegister;
@@ -20,7 +20,7 @@ import com.google.common.collect.Iterables;
 import com.shampaggon.crackshot.CSUtility;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -42,6 +42,7 @@ import java.util.Random;
  * ----------------------------------------------------------------------------
  */
 public class Game extends JavaPlugin {
+	public static final String PLUGIN_NAME = "Free-For-All";
 	public static RunnableManager runnableManager;
 
 	public static int gameStartTime = 30;
@@ -77,9 +78,9 @@ public class Game extends JavaPlugin {
 	public void onEnable() {
 		if (!getDataFolder().exists()) {
 			if (getDataFolder().mkdirs()) {
-				Commons.messageConsole("Created default data-folder for Team-Deathmatch");
+				Commons.messageConsole("Created default data-folder for " + PLUGIN_NAME);
 			} else {
-				Commons.messageConsole("Failed to create default data-folder for Team-Deathmatch!");
+				Commons.messageConsole("Failed to create default data-folder for " + PLUGIN_NAME);
 			}
 		}
 
@@ -92,8 +93,8 @@ public class Game extends JavaPlugin {
 		SQL_CONFIG_FILE = DATA_FOLDER + "Database.xml";
 		PERKS_FOLDER = DATA_FOLDER + "Perks/";
 		//Init our config
-		configuration = new Configuration().init();
 		initConfig();
+		configuration = new Configuration().init();
 		//Load out database classes
 		SqlConfiguration sqlConfiguration = configuration.getSqlConfiguration();
 		loadoutSQL = new LoadoutSQL(sqlConfiguration);
@@ -103,9 +104,9 @@ public class Game extends JavaPlugin {
 		perkHandler = new PerkHandler();
 		gunHandler = new GunHandler();
 		crackShotAPI = new CSUtility();
-		worldList = new DataHandler("plugins/Team-Deathmatch/Worldlist.txt");
+		worldList = new DataHandler("plugins/" + PLUGIN_NAME + "/Worldlist.txt");
 		runnableManager = new RunnableManager(this);
-		rotateMap(false);
+		rotateMap();
 		new CommandRegister(this);
 		new BukkitListeners(this);
 		//new Voting(this);
@@ -114,7 +115,7 @@ public class Game extends JavaPlugin {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			final String playerName = player.getName();
 			FakeboardHandler.loadPlayer(playerName);
-			if (PlayerHandler.getWorldName(player).equalsIgnoreCase(Game.gameMap)) {
+			if (Players.getWorldName(player).equalsIgnoreCase(Game.gameMap)) {
 				player.teleport(Bukkit.getWorld(Game.gameMap).getSpawnLocation());
 			}
 		}
@@ -153,7 +154,7 @@ public class Game extends JavaPlugin {
 
 			if (!perksDirectory.exists()) {
 				if (perksDirectory.mkdirs()) {
-					Commons.messageConsole("Created the perks data folder for TeamDeathmatch");
+					Commons.messageConsole("Created the perks data folder for " + PLUGIN_NAME);
 				} else {
 					Commons.messageConsole("Error making the perks folder");
 				}
@@ -204,15 +205,13 @@ public class Game extends JavaPlugin {
 		}
 	}
 
-	public static void rotateMap(boolean rollback) {
-		FakeboardHandler.cleanTeams();
-
+	public static void rotateMap() {
 		if (!GameSetupHandler.isForceMap()) {
 			gameMap = getGameWorld();
 		}
 
 		runnableManager.registerSynchRepeatTask("SetupCheck", new StartCheckRunnable(), 200L, 40L);
-
+		FakeboardHandler.resetPlayerData();
 		cleanActiveMap();
 
 		for (Player Player : Bukkit.getOnlinePlayers()) {
@@ -227,19 +226,19 @@ public class Game extends JavaPlugin {
 	}
 
 	public static void givePlayerTunnelsXP(String playerName, double amount, boolean isSilent) {
-		PlayerWrapper playerWrapper = PlayerHandler.getData(playerName);
+		PlayerWrapper playerWrapper = Players.getData(playerName);
 		double earnedXP = getXP(playerName, amount);
 		playerWrapper.addCurrency(earnedXP);
 		if (!isSilent) {
-			if (PlayerHandler.isOnline(playerName)) {
-				PlayerHandler.getPlayer(playerName).sendMessage(ChatColor.GREEN + "You've earned +" + ((int) earnedXP) + " XP!");
+			if (Players.isOnline(playerName)) {
+				Players.sendMessage(Players.getPlayer(playerName), "&aYou've earned +" + ((int) earnedXP) + " XP!");
 			}
 		}
 	}
 
 	public static double getXP(String playerName, double amountAwarded) {
 		double awardedXP = amountAwarded;
-		if (Bukkit.getPlayer(playerName) != null && PlayerHandler.isPremium(playerName)) {
+		if (Bukkit.getPlayer(playerName) != null && Players.isPremium(playerName)) {
 			awardedXP = (awardedXP > 20 ? awardedXP + 20 : awardedXP * 2);
 		}
 		return awardedXP;
@@ -252,6 +251,34 @@ public class Game extends JavaPlugin {
 			worldName = worldList.get(new Random().nextInt(worldList.size()));
 		}
 		return worldName;
+	}
+
+	public static Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public static SpawnConfiguration getSpawnConfig() {
+		return getConfiguration().getSpawnConfiguration();
+	}
+
+	public static WorldSpawns getSpawns(String worldName) {
+		return getSpawnConfig().getWorldSpawns(worldName);
+	}
+
+	public static WorldSpawns getSpawns(World world) {
+		return getSpawns(world.getName());
+	}
+
+	public static WorldSpawns getSpawns(Player player) {
+		return getSpawns(Players.getWorldName(player));
+	}
+
+	public static Location getRandomSpawn(Player player) {
+		return getSpawns(player).getRandomSpawn();
+	}
+
+	public static Location getRandomSpawn(String worldName) {
+		return getSpawns(worldName).getRandomSpawn();
 	}
 
 	public enum LoadoutSlot {

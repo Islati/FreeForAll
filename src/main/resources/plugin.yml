@@ -1,11 +1,11 @@
-name: Team-Deathmatch
+name: Free-For-All
 main: com.caved_in.freeforall.Game
 version: 1.0
-description: KABOOM
-author: Brandon_TGC
+description: Free for all - It's dog eat dog out there!
+author: Brandon Curtis
 depend: [Multiverse-Core,TagAPI,PopupMenuAPI,CrackShot,WorldManager,ForceRespawn,Tunnels-Common]
 commands:
-   setteamspawn:
+   addspawn:
       usage: /<command> <team>
       permission: op
    forcemap:
