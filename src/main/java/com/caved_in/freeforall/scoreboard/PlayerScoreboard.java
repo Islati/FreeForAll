@@ -12,6 +12,8 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.util.UUID;
+
 /**
  * ----------------------------------------------------------------------------
  * "THE BEER-WARE LICENSE" (Revision 42):
@@ -72,7 +74,8 @@ public class PlayerScoreboard {
 		playerKillScore.setScore(player.getPlayerScore());
 		playerDeathScore.setScore(player.getPlayerDeaths());
 		playerKillStreak.setScore(player.getKillStreak());
-		playerXPScore.setScore((int) Players.getData(player.getName()).getCurrency());
+        UUID uuid = Bukkit.getPlayer(player.getName()).getUniqueId();
+		playerXPScore.setScore((int) Players.getData(uuid).getCurrency());
 	}
 
 	public enum ScoreType {

@@ -65,7 +65,7 @@ public class PerkMenuItem extends MenuItem {
 					player.sendMessage(StringUtil.formatColorCodes("&eClick again to purchase &6" + perk.getPerkName()));
 				}
 			} else {
-				PlayerWrapper playerWrapper = Players.getData(player.getName());
+				PlayerWrapper playerWrapper = Players.getData(player.getUniqueId());
 
 				if (playerWrapper.getCurrency() >= perkPurchaseCost) {
 					playerWrapper.removeCurrency(perkPurchaseCost);

@@ -32,6 +32,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * ----------------------------------------------------------------------------
@@ -226,7 +227,8 @@ public class Game extends JavaPlugin {
 	}
 
 	public static void givePlayerTunnelsXP(String playerName, double amount, boolean isSilent) {
-		PlayerWrapper playerWrapper = Players.getData(playerName);
+        UUID uuid = Bukkit.getPlayer(playerName).getUniqueId();
+		PlayerWrapper playerWrapper = Players.getData(uuid);
 		double earnedXP = getXP(playerName, amount);
 		playerWrapper.addCurrency(earnedXP);
 		if (!isSilent) {
@@ -237,8 +239,9 @@ public class Game extends JavaPlugin {
 	}
 
 	public static double getXP(String playerName, double amountAwarded) {
+        UUID uuid = Bukkit.getPlayer(playerName).getUniqueId();
 		double awardedXP = amountAwarded;
-		if (Bukkit.getPlayer(playerName) != null && Players.isPremium(playerName)) {
+		if (Bukkit.getPlayer(playerName) != null && Players.isPremium(uuid)) {
 			awardedXP = (awardedXP > 20 ? awardedXP + 20 : awardedXP * 2);
 		}
 		return awardedXP;

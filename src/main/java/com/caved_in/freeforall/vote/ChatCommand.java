@@ -27,7 +27,7 @@ public enum ChatCommand {
 				if (Players.isOnline(playerKick)) {
 					VoteFactory.setActiveVote(VoteFactory.createVote(VOTE_KICK_PLAYER, player.getName(), args));
 				} else {
-					Players.sendMessage(player, Messages.PLAYER_OFFLINE(playerKick));
+					Players.sendMessage(player, Messages.playerOffline(playerKick));
 				}
 			} else {
 				Players.sendMessage(player, GameMessages.VOTE_ALREADY_IN_PROGRESS);

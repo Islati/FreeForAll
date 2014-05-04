@@ -76,7 +76,7 @@ public class CustomEventHandler {
 			GunWrapper gunData = event.getGun();
 			String gunID = gunData.getGunName();
 			//Get the wrapped player data from commons
-			PlayerWrapper playerWrapper = Players.getData(player.getName());
+			PlayerWrapper playerWrapper = Players.getData(player.getUniqueId());
 			double playerBalance = playerWrapper.getCurrency();
 			//Check if the player has enough XP to purchase the gun
 			if (playerBalance >= gunData.getGunPrice()) {
