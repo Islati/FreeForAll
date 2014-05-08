@@ -25,7 +25,7 @@ public class SpawnsCommand {
 			String worldName = Players.getWorldName(player);
 			Players.sendMessage(player, String.format("&e%s&a spawns in world &7%s", spawnCount, worldName));
 		} else {
-			Players.sendMessage(player, Messages.INVALID_COMMAND_USAGE("Team"));
+			Players.sendMessage(player, Messages.invalidCommandUsage("Team"));
 		}
 	}
 }

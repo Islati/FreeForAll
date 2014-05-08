@@ -53,7 +53,7 @@ public class SecondarySelectionItem extends MenuItem {
 				this.hasAlreadyClicked = true;
 				player.sendMessage(ChatColor.YELLOW + "Click again to purchase the " + this.getText());
 			} else {
-				PlayerWrapper playerWrapper = Players.getData(player.getName());
+				PlayerWrapper playerWrapper = Players.getData(player.getUniqueId());
 				double playerBalance = playerWrapper.getCurrency();
 				if (playerBalance >= this.gunData.getGunPrice()) {
 					this.hasAlreadyClicked = false;

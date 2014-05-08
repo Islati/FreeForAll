@@ -24,6 +24,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.shampaggon.crackshot.events.WeaponDamageEntityEvent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -1,6 +1,6 @@
 package com.caved_in.freeforall.config;
 
-import com.caved_in.commons.sql.SQL;
+import com.caved_in.commons.sql.DatabaseConnector;
 import com.caved_in.freeforall.perks.Perk;
 import com.caved_in.freeforall.perks.PerkHandler;
 
@@ -18,7 +18,7 @@ import java.util.Set;
  * this stuff is worth it, you can buy me a beer in return Brandon Curtis.
  * ----------------------------------------------------------------------------
  */
-public class PerksSQL extends SQL {
+public class PerksSQL extends DatabaseConnector {
 
 	private static String perkTable = "guns_perks";
 	private static String playerColumn = "Player";
@@ -37,7 +37,7 @@ public class PerksSQL extends SQL {
 				sqlConfig.getPassword()
 		);
 		creationStatement = creationStatement.replace("[DB]", sqlConfig.getDatabase());
-		execute(creationStatement);
+	//	execute(creationStatement);
 	}
 
 	public boolean hasData(String playerName) {

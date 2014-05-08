@@ -41,7 +41,7 @@ public class VoteKick extends Vote {
 			@Override
 			public void run() {
 				Players.kick(Players.getPlayer(playerToKick), kickReason);
-				Players.messageAll(Messages.PLAYER_KICKED(playerToKick, kickReason));
+				Players.messageAll(Messages.playerKicked(playerToKick, kickReason));
 			}
 		});
 	}

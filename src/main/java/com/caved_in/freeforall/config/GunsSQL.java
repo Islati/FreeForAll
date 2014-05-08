@@ -1,6 +1,6 @@
 package com.caved_in.freeforall.config;
 
-import com.caved_in.commons.sql.SQL;
+import com.caved_in.commons.sql.DatabaseConnector;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +17,7 @@ import java.util.Set;
  * this stuff is worth it, you can buy me a beer in return Brandon Curtis.
  * ----------------------------------------------------------------------------
  */
-public class GunsSQL extends SQL {
+public class GunsSQL extends DatabaseConnector {
 	private static String gunsTable = "Guns_Weapons";
 	private static String playerColumn = "Player";
 	private static String gunColumn = "GunID";
@@ -36,7 +36,7 @@ public class GunsSQL extends SQL {
 				sqlConfig.getPassword()
 		);
 		createTableStatement = createTableStatement.replace("[DB]", sqlConfig.getDatabase());
-		execute(createTableStatement);
+	//	execute(createTableStatement);
 	}
 
 	public boolean hasData(String playerName) {

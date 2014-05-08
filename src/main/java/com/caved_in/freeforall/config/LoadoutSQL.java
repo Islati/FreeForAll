@@ -1,6 +1,6 @@
 package com.caved_in.freeforall.config;
 
-import com.caved_in.commons.sql.SQL;
+import com.caved_in.commons.sql.DatabaseConnector;
 import com.caved_in.freeforall.loadout.Loadout;
 import com.caved_in.freeforall.perks.PerkHandler;
 
@@ -17,7 +17,7 @@ import java.util.*;
  * this stuff is worth it, you can buy me a beer in return Brandon Curtis.
  * ----------------------------------------------------------------------------
  */
-public class LoadoutSQL extends SQL {
+public class LoadoutSQL extends DatabaseConnector {
 	private static String loadoutTable = "guns_loadouts";
 	private static String playerColumn = "Player";
 	private static String loadoutNumberColumn = "Loadout";
@@ -42,7 +42,7 @@ public class LoadoutSQL extends SQL {
 				sqlConfig.getPassword()
 		);
 		creationStatement = creationStatement.replace("[DB]", sqlConfig.getDatabase());
-		execute(creationStatement);
+	//	execute(creationStatement);
 	}
 
 	public boolean hasData(String playerName) {
